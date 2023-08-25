@@ -15,9 +15,9 @@ namespace EditorChanges {
     public class ChangeKeybindsDisplay {
 
         // down twistLeft up twistRight / turnRight turnLeft
-        static string rep = "" + Char.ToUpper((char)Patch.pitchDownKey.Value) + Char.ToUpper((char)Patch.twistLeftKey.Value) +
-            Char.ToUpper((char)Patch.pitchUpKey.Value) + Char.ToUpper((char)Patch.twistRightKey.Value)
-            + " / " + Char.ToUpper((char)Patch.turnRightKey.Value) + Char.ToUpper((char)Patch.turnLeftKey.Value);
+        static string rep = "" + Char.ToUpper((char)Patch.pitchDownKey.Value) + Char.ToUpper((char)Patch.twistLeftKey.Value)
+            + Char.ToUpper((char)Patch.pitchUpKey.Value) + Char.ToUpper((char)Patch.twistRightKey.Value) + " / "
+            + Char.ToUpper((char)Patch.turnRightKey.Value) + Char.ToUpper((char)Patch.turnLeftKey.Value);
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             var codes = new List<CodeInstruction>(instructions);

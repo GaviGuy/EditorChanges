@@ -13,8 +13,6 @@ namespace EditorChanges {
 
     [HarmonyPatch(typeof(TrackEditorGUI), "HandleTrackTurnEditorInput")]
     public class ChangeKeybinds {
-        //passive
-        //line 2156 in c#
 
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             var codes = new List<CodeInstruction>(instructions);
@@ -27,6 +25,14 @@ namespace EditorChanges {
                 (int) Patch.twistLeftKey.Value,
                 (int) Patch.twistRightKey.Value
             };
+            string[] operations = {
+                "Pitch Down",
+                "Pitch Up",
+                "Turn Right",
+                "Turn Left",
+                "Twist Left",
+                "Twist Right"
+            };
             // 119, 115, 113, 101, 97, 100
             // W S Q E A D
 
@@ -35,7 +41,6 @@ namespace EditorChanges {
             for (int i = 0; i < 6; i++) {
                 for (ind = startInd; ind < codes.Count; ind++) {
                     if (codes[ind].opcode == OpCodes.Call && codes[ind].Calls(typeof(TrackEditorGUI).GetMethod("GetKeyHeld"))) {
-                        //Patch.logger.LogWarning("ind: " + ind);
                         break;
                     }
                 }
@@ -46,7 +51,7 @@ namespace EditorChanges {
                         break;
                     }
                 }
-                Patch.logger.LogInfo("Set " + keycodes[i] + " to operation " + i);
+                Patch.logger.LogInfo("Set " + (char)keycodes[i] + " to " + operations[i]);
             }
             return codes.AsEnumerable();
         }

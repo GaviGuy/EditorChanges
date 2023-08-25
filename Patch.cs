@@ -46,10 +46,16 @@ namespace EditorChanges {
 
             //Logger = base.Logger;
             
-            if(enableFixTimeSigPlacement.Value)
+            if(enableFixTimeSigPlacement.Value) {
                 Harmony.CreateAndPatchAll(typeof(FixTimeSigPlacement));
-            if(enableRemoveLaneLimit.Value)
+                //Logger.LogInfo("Enabled FixTimeSigPlacement");
+            }
+
+            if(enableRemoveLaneLimit.Value) {
                 Harmony.CreateAndPatchAll(typeof(RemoveLaneLimit));
+                //Logger.LogInfo("Enabled RemoveLaneLimit");
+            }
+
             if(enableChangeKeybinds.Value
                 && pitchDownKey.Value != (int) 'w'
                 || pitchUpKey.Value != (int) 's'
@@ -59,6 +65,7 @@ namespace EditorChanges {
                 || turnRightKey.Value != (int) 'q') {
                 Harmony.CreateAndPatchAll(typeof(ChangeKeybinds));
                 Harmony.CreateAndPatchAll(typeof(ChangeKeybindsDisplay));
+                //Logger.LogInfo("Enabled ChangeKeybinds");
             }
         }
 
