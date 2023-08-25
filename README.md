@@ -12,7 +12,7 @@ After running the mod once, a config will be generated at Spin Rhythm\BepInEx\co
 Use it to enable individual features of this plugin and to set new keys to use in the flight path editor
 
 *note: due to the way SRXD codes controls for the flight editor, a more human-friendly interface for changing the controls isn't possible without a large rework of code--well beyond my expertise.*
-*for now, you'll have to use the unicode value of the key*
+*For now, you'll have to use the unicode value of the key you wish to use.*
 
 ## Potential Future Features
 * allow mirroring in the flight path editor
