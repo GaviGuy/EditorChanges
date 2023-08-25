@@ -16,42 +16,26 @@ namespace EditorChanges {
         //passive
         //line 2156 in c#
 
-        static private ConfigEntry<char> pitchUpKey,
-            pitchDownKey,
-            twistRightKey,
-            twistLeftKey,
-            turnRightKey,
-            turnLeftKey;
-
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
             var codes = new List<CodeInstruction>(instructions);
-
-            pitchDownKey = Config.Bind("General.Keybinds", "PitchDownKey", 'w', "Editor key to pitch down");
-            pitchUpKey = Config.Bind("General.Keybinds", "PitchUpKey", 's', "Editor key to pitch up");
-            twistLeftKey = Config.Bind("General.Keybinds", "twistLeftKey", 'a', "Editor key to twist left");
-            twistRightKey = Config.Bind("General.Keybinds", "twistRightKey", 'd', "Editor key to twist right");
-            turnLeftKey = Config.Bind("General.Keybinds", "turnLeftKey", 'e', "Editor key to turn left");
-            turnRightKey = Config.Bind("General.Keybinds", "turnRightKey", 'q', "Editor key to turn right");
-
+            
             int[] keycodes = {
-                (int) pitchDownKey.Value,
-                (int) pitchUpKey.Value,
-                (int) turnRightKey.Value,
-                (int) turnLeftKey.Value,
-                (int) twistLeftKey.Value,
-                (int) twistRightKey.Value
+                (int) Patch.pitchDownKey.Value,
+                (int) Patch.pitchUpKey.Value,
+                (int) Patch.turnRightKey.Value,
+                (int) Patch.turnLeftKey.Value,
+                (int) Patch.twistLeftKey.Value,
+                (int) Patch.twistRightKey.Value
             };
             // 119, 115, 113, 101, 97, 100
             // W S Q E A D
 
-
-
-
             int startInd = 0,
-                ind = -1;
+                ind;
             for (int i = 0; i < 6; i++) {
-                for (int j = startInd; j < codes.Count; j++) {
-                    if (codes[i].opcode == OpCodes.Call && codes[i].Calls("TrackEditorGUI::GetKeyHeld")) {
+                for (ind = startInd; ind < codes.Count; ind++) {
+                    if (codes[ind].opcode == OpCodes.Call && codes[ind].Calls(typeof(TrackEditorGUI).GetMethod("GetKeyHeld"))) {
+                        //Patch.logger.LogWarning("ind: " + ind);
                         break;
                     }
                 }
@@ -62,16 +46,9 @@ namespace EditorChanges {
                         break;
                     }
                 }
+                Patch.logger.LogInfo("Set " + keycodes[i] + " to operation " + i);
             }
-
             return codes.AsEnumerable();
-
-            //the process is very simple
-            //  look for calls to TrackEditorGUI::GetKeyHeld
-            //  and replace the previous ldc.i4.s with the right value
-            //  it seems to simply use unicode
-
-
         }
     }
 }

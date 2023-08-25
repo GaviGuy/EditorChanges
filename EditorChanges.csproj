@@ -7,8 +7,8 @@
     <ProjectGuid>$guid1$</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TestTemplate</RootNamespace>
-    <AssemblyName>TestTemplate</AssemblyName>
+    <RootNamespace>EditorChanges</RootNamespace>
+    <AssemblyName>EditorChanges</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -67,6 +67,7 @@
 	<Compile Include="Patches\FixTimeSigPlacement.cs" />
 	<Compile Include="Patches\RemoveLaneLimit.cs" />
 	<Compile Include="Patches\ChangeKeybinds.cs" />
+	<Compile Include="Patches\ChangeKeybindsDisplay.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
