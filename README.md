@@ -10,5 +10,6 @@ A plugin that adds extra functionality to the SRXD editor.
 * allow changing notes to their invisible variants
 * allow changing shape of sliders with no endpoint
 * allow changing ending of stray beathold ends
+* place error flags on stray hold ends, matches ending spins, and scratch snipes
 * fix a bug that causes position in clip info editor to be different than in the note editor
 * fix a bug that deletes notes when changing a tempomap

@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using UnityEngine;
 using HarmonyLib;
 using System;
@@ -12,13 +13,26 @@ using System.Threading.Tasks;
 
 namespace EditorChanges {
     [BepInPlugin("srxd.editorchanges", "EditorChanges", "1.0.0")]
-    public class EditorFixPlugin : BaseUnityPlugin {
-        public static BepInEx.Logging.ManualLogSource Logger;
+    public class Patch : BaseUnityPlugin {
+        //public static BepInEx.Logging.ManualLogSource Logger;
+        private ConfigEntry<bool> enableRemoveLaneLimit,
+            enableFixTimeSigPlacement,
+            enableChangeKeybinds;
 
         private void Awake() {
-            Logger = base.Logger;
-            Harmony.CreateAndPatchAll(typeof(FixTimeSigPlacement));
-            Harmony.CreateAndPatchAll(typeof(RemoveLaneLimit));
+            
+            enableRemoveLaneLimit = Config.Bind("General.Toggles", "enableRemoveLaneLimit", true, "Whether to remove the limit of lane movement in the editor");
+            enableFixTimeSigPlacement = Config.Bind("General.Toggles", "enableFixTimeSigPlacement", true, "Whether to adjust placement of time signatures when the first time sig is offset from the first bpm marker");
+            enableChangeKeybinds = Config.Bind("General.Toggles", "enableChangePathKeybind", false, "Whether hardcoded flight path controls should be overridden (see config below to change the keys)");
+
+            //Logger = base.Logger;
+            
+            if(enableFixTimeSigPlacement.Value)
+                Harmony.CreateAndPatchAll(typeof(FixTimeSigPlacement));
+            if(enableRemoveLaneLimit.Value)
+                Harmony.CreateAndPatchAll(typeof(RemoveLaneLimit));
+            if(enableChangeKeybinds.Value)
+                Harmony.CreateAndPatchAll(typeof(ChangeKeybinds));
         }
 
         /*
