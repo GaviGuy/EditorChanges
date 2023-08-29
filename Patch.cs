@@ -20,7 +20,8 @@ namespace EditorChanges {
 
         private static ConfigEntry<bool> enableRemoveLaneLimit,
             enableFixTimeSigPlacement,
-            enableChangeKeybinds;
+            enableChangeKeybinds,
+            enableDisableScrollPanning;
 
         public static ConfigEntry<int> pitchUpKey,
             pitchDownKey,
@@ -35,7 +36,7 @@ namespace EditorChanges {
             enableRemoveLaneLimit = Config.Bind("Toggles", "enableRemoveLaneLimit", true, "Whether to remove the limit of lane movement in the editor");
             enableFixTimeSigPlacement = Config.Bind("Toggles", "enableFixTimeSigPlacement", true, "Whether to adjust placement of time signatures when the first time sig is offset from the first bpm marker");
             enableChangeKeybinds = Config.Bind("Toggles", "enableChangePathKeybind", true, "Whether hardcoded flight path controls should be overridden (change keys in config if enabling)");
-            disableScrollPanning = Config.Bind("Toggles", "disableScrollPanning", false, "Whether scrolling to move in the editor should be DISABLED");
+            enableDisableScrollPanning = Config.Bind("Toggles", "disableScrollPanning", false, "Whether scrolling to move in the editor should be DISABLED");
 
             pitchDownKey = Config.Bind("Keybinds", "PitchDownKey", (int) 'w', "Unicode value of the editor key to pitch down");
             pitchUpKey = Config.Bind("Keybinds", "PitchUpKey", (int) 's', "Unicode value of the editor key to pitch up");
@@ -69,8 +70,8 @@ namespace EditorChanges {
                 //Logger.LogInfo("Enabled ChangeKeybinds");
             }
 
-            if(disableScrollPanning.Value) {
-                Harmony.CreateAndPatchAll(typeof(disableScrollPanning));
+            if(enableDisableScrollPanning.Value) {
+                Harmony.CreateAndPatchAll(typeof(DisableScrollPanning));
                 //Logger.LogInfo("Enabled RemoveLaneLimit");
             }
         }

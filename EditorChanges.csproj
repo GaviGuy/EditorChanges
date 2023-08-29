@@ -58,6 +58,9 @@
 	<Reference Include="UnityEngine.CoreModule">
 	  <HintPath>..\..\dependancies\UnityEngine.CoreModule.dll</HintPath>
 	</Reference>
+	<Reference Include="UnityEngine.InputLegacyModule">
+	  <HintPath>..\..\dependancies\UnityEngine.InputLegacyModule.dll</HintPath>
+	</Reference>
 	<Reference Include="UnityEngine">
 	  <HintPath>..\..\dependancies\UnityEngine.dll</HintPath>
 	</Reference>
@@ -68,6 +71,7 @@
 	<Compile Include="Patches\RemoveLaneLimit.cs" />
 	<Compile Include="Patches\ChangeKeybinds.cs" />
 	<Compile Include="Patches\ChangeKeybindsDisplay.cs" />
+	<Compile Include="Patches\DisableScrollPanning.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
