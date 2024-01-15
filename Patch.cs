@@ -21,7 +21,9 @@ namespace EditorChanges {
         private static ConfigEntry<bool> enableRemoveLaneLimit,
             enableFixTimeSigPlacement,
             enableChangeKeybinds,
-            enableDisableScrollPanning;
+            enableDisableScrollPanning,
+            enableCustomSubdivisions,
+            enableInvisibility;
 
         public static ConfigEntry<int> pitchUpKey,
             pitchDownKey,
@@ -30,50 +32,68 @@ namespace EditorChanges {
             turnRightKey,
             turnLeftKey;
 
+        public static ConfigEntry<int[]> subdivisionList;
+
+        private static int[] defaultSubdivisions = {2, 4, 5, 6, 8, 10, 12, 16, 24, 60}; // it won't let me config with arrays :c
+
         private void Awake() {
             logger = Logger;
             
-            enableRemoveLaneLimit = Config.Bind("Toggles", "enableRemoveLaneLimit", true, "Whether to remove the limit of lane movement in the editor");
-            enableFixTimeSigPlacement = Config.Bind("Toggles", "enableFixTimeSigPlacement", true, "Whether to adjust placement of time signatures when the first time sig is offset from the first bpm marker");
-            enableChangeKeybinds = Config.Bind("Toggles", "enableChangePathKeybind", true, "Whether hardcoded flight path controls should be overridden (change keys in config if enabling)");
-            enableDisableScrollPanning = Config.Bind("Toggles", "disableScrollPanning", false, "Whether scrolling to move in the editor should be DISABLED");
+            /* 
+             * change how this works. disable modules if they're not configed instead of having a setting to disable each one
+             * Lane limit: -1 to disable, 96 default
+             * time sig: seperate module? on/off?
+             * changeKeybinds: default to disable
+             * customSubdivisions: default to disable
+             */
 
-            pitchDownKey = Config.Bind("Keybinds", "PitchDownKey", (int) 'w', "Unicode value of the editor key to pitch down");
-            pitchUpKey = Config.Bind("Keybinds", "PitchUpKey", (int) 's', "Unicode value of the editor key to pitch up");
-            twistLeftKey = Config.Bind("Keybinds", "twistLeftKey", (int) 'a', "Unicode value of the editor key to twist left");
-            twistRightKey = Config.Bind("Keybinds", "twistRightKey", (int) 'd', "Unicode value of the editor key to twist right");
-            turnLeftKey = Config.Bind("Keybinds", "turnLeftKey", (int) 'e', "Unicode value of the editor key to turn left");
-            turnRightKey = Config.Bind("Keybinds", "turnRightKey", (int) 'q', "Unicode value of the editor key to turn right");
+            enableRemoveLaneLimit = Config.Bind("Toggles", "enableRemoveLaneLimit", true, "Whether to enable this module");
+            enableFixTimeSigPlacement = Config.Bind("Toggles", "enableFixTimeSigPlacement", true, "Whether to enable this module");
+            enableChangeKeybinds = Config.Bind("Toggles", "enableChangePathKeybind", true, "Whether to enable this module");
+            enableCustomSubdivisions = Config.Bind("Toggles", "enableCustomSubdivisions", true, "Whether to enable this module");
+            enableInvisibility = Config.Bind("Toggles", "enableInvisibility", true, "Whether to enable this module");
 
+            pitchDownKey    = Config.Bind("Keybinds", "PitchDownKey",   (int) 'w', "Unicode value of the key for DOWN");
+            pitchUpKey      = Config.Bind("Keybinds", "PitchUpKey",     (int) 's', "Unicode value of the key for UP");
+            twistLeftKey    = Config.Bind("Keybinds", "twistLeftKey",   (int) 'a', "Unicode value of the key for CLOCKWISE");
+            twistRightKey   = Config.Bind("Keybinds", "twistRightKey",  (int) 'd', "Unicode value of the key for COUNTER-CLOCKWISE");
+            turnLeftKey     = Config.Bind("Keybinds", "turnLeftKey",    (int) 'e', "Unicode value of the key for LEFT");
+            turnRightKey    = Config.Bind("Keybinds", "turnRightKey",   (int) 'q', "Unicode value of the key for RIGHT");
 
-            //Logger = base.Logger;
+            //subdivisionList = Config.Bind("Misc", "subdivisionList", defaultSubdivisions, "Possible values for editor subdivisions");
             
             if(enableFixTimeSigPlacement.Value) {
                 Harmony.CreateAndPatchAll(typeof(FixTimeSigPlacement));
-                //Logger.LogInfo("Enabled FixTimeSigPlacement");
+                Logger.LogInfo("Enabled FixTimeSigPlacement");
             }
 
             if(enableRemoveLaneLimit.Value) {
                 Harmony.CreateAndPatchAll(typeof(RemoveLaneLimit));
-                //Logger.LogInfo("Enabled RemoveLaneLimit");
+                Logger.LogInfo("Enabled RemoveLaneLimit");
             }
 
             if(enableChangeKeybinds.Value
-                && pitchDownKey.Value != (int) 'w'
-                || pitchUpKey.Value != (int) 's'
-                || twistLeftKey.Value != (int) 'a'
-                || twistRightKey.Value != (int) 'd'
-                || turnLeftKey.Value != (int) 'e'
-                || turnRightKey.Value != (int) 'q') {
+                    && pitchDownKey.Value != (int) 'w'
+                    || pitchUpKey.Value != (int) 's'
+                    || twistLeftKey.Value != (int) 'a'
+                    || twistRightKey.Value != (int) 'd'
+                    || turnLeftKey.Value != (int) 'e'
+                    || turnRightKey.Value != (int) 'q') {
                 Harmony.CreateAndPatchAll(typeof(ChangeKeybinds));
                 Harmony.CreateAndPatchAll(typeof(ChangeKeybindsDisplay));
-                //Logger.LogInfo("Enabled ChangeKeybinds");
+                Logger.LogInfo("Enabled ChangeKeybinds");
             }
 
-            if(enableDisableScrollPanning.Value) {
-                Harmony.CreateAndPatchAll(typeof(DisableScrollPanning));
-                //Logger.LogInfo("Enabled RemoveLaneLimit");
+ //           if(enableCustomSubdivisions.Value) {
+ //               Harmony.CreateAndPatchAll(typeof(CustomSubdivisions));
+ //               Logger.LogInfo("Enabled CustomSubdivisions");
+ //           }
+
+            if(enableInvisibility.Value) {
+                Harmony.CreateAndPatchAll(typeof(InvisColorSwap));
+                Logger.LogInfo("Enabled Invisibility");
             }
+
         }
 
         /*

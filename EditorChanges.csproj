@@ -64,6 +64,9 @@
 	<Reference Include="UnityEngine">
 	  <HintPath>..\..\dependancies\UnityEngine.dll</HintPath>
 	</Reference>
+	<Reference Include="SSD.Utility">
+	  <HintPath>..\..\dependancies\SSD.Utility.dll</HintPath>
+	</Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Patch.cs" />
@@ -71,7 +74,8 @@
 	<Compile Include="Patches\RemoveLaneLimit.cs" />
 	<Compile Include="Patches\ChangeKeybinds.cs" />
 	<Compile Include="Patches\ChangeKeybindsDisplay.cs" />
-	<Compile Include="Patches\DisableScrollPanning.cs" />
+	<Compile Include="Patches\CustomSubdivisions.cs" />
+	<Compile Include="Patches\InvisColorSwap.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
