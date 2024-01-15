@@ -21,7 +21,6 @@ namespace EditorChanges {
         private static ConfigEntry<bool> enableRemoveLaneLimit,
             enableFixTimeSigPlacement,
             enableChangeKeybinds,
-            enableDisableScrollPanning,
             enableCustomSubdivisions,
             enableInvisibility;
 

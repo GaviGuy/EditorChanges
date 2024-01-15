@@ -75,20 +75,23 @@ namespace EditorChanges {
             codes.RemoveAt(ind);
             codes.RemoveAt(ind);
 
+            CodeInstruction[] adds = {
+                new CodeInstruction(OpCodes.Dup),
+                new CodeInstruction(OpCodes.Ldc_I4_2),
+                new CodeInstruction(OpCodes.Ceq),
+                new CodeInstruction(OpCodes.Ldc_I4_2),
+                new CodeInstruction(OpCodes.Mul),
+                new CodeInstruction(OpCodes.Sub),
+                new CodeInstruction(OpCodes.Dup),
+                new CodeInstruction(OpCodes.Ldc_I4_3),
+                new CodeInstruction(OpCodes.Cgt),
+                new CodeInstruction(OpCodes.Ldc_I4_2),
+                new CodeInstruction(OpCodes.Mul),
+                new CodeInstruction(OpCodes.Sub)
+            };
 
-            codes.Insert(ind, new CodeInstruction(OpCodes.Sub));
-            codes.Insert(ind, new CodeInstruction(OpCodes.Mul));
-            codes.Insert(ind, new CodeInstruction(OpCodes.Ldc_I4_2));
-            codes.Insert(ind, new CodeInstruction(OpCodes.Cgt));
-            codes.Insert(ind, new CodeInstruction(OpCodes.Ldc_I4_3));
-            codes.Insert(ind, new CodeInstruction(OpCodes.Dup));
-
-            codes.Insert(ind, new CodeInstruction(OpCodes.Sub));
-            codes.Insert(ind, new CodeInstruction(OpCodes.Mul));
-            codes.Insert(ind, new CodeInstruction(OpCodes.Ldc_I4_2));
-            codes.Insert(ind, new CodeInstruction(OpCodes.Ceq));
-            codes.Insert(ind, new CodeInstruction(OpCodes.Ldc_I4_2));
-            codes.Insert(ind, new CodeInstruction(OpCodes.Dup));
+            codes.InsertRange(ind, adds);
+            
 
             //Logger.LogInfo("Transpilation successful!");
 
