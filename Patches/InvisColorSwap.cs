@@ -1,4 +1,5 @@
 using BepInEx;
+using BepInEx.Logging;
 using UnityEngine;
 using HarmonyLib;
 using SSD.Utility;
@@ -12,7 +13,9 @@ namespace EditorChanges {
 
     [HarmonyPatch(typeof(TrackEditorGUI), "HandleNoteEditorInput")]
     public class InvisColorSwap {
+        static ManualLogSource Logger = Patch.logger;
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {
+            Logger.LogInfo("InvisColorSwap: entered transpiler");
             var codes = new List<CodeInstruction>(instructions);
 
             /*
@@ -45,7 +48,6 @@ namespace EditorChanges {
                     //MathUtils::Repeat
 
             int ind = -1;
-            Type[] types = {typeof(Int32), typeof(Int32)};
             for (int i = 1; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4_2 
                         && codes[i - 1].opcode == OpCodes.Add
@@ -72,8 +74,7 @@ namespace EditorChanges {
             //after add: dup, push2, ceq, push2, mul, sub (ie. if it's 2, subtract 2)
             //           dup, push3, cgt, push2, mul, sub (ie. if it's >3, subtract 2)
             
-            codes.RemoveAt(ind);
-            codes.RemoveAt(ind);
+            codes.RemoveRange(ind, 2);
 
             CodeInstruction[] adds = {
                 new CodeInstruction(OpCodes.Dup),
@@ -93,7 +94,7 @@ namespace EditorChanges {
             codes.InsertRange(ind, adds);
             
 
-            //Logger.LogInfo("Transpilation successful!");
+            Logger.LogInfo("InvisColorSwap: Transpilation successful!");
 
             return codes.AsEnumerable();
         }

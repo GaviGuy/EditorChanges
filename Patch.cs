@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace EditorChanges {
-    [BepInPlugin("srxd.editorchanges", "EditorChanges", "1.1.0")]
+    [BepInPlugin("srxd.editorchanges", "EditorChanges", "1.2.1")]
     public class Patch : BaseUnityPlugin {
 
         public static ManualLogSource logger;
@@ -89,6 +89,7 @@ namespace EditorChanges {
  //           }
 
             if(enableInvisibility.Value) {
+                Harmony.CreateAndPatchAll(typeof(InvisToggle));
                 Harmony.CreateAndPatchAll(typeof(InvisColorSwap));
                 Logger.LogInfo("Enabled Invisibility");
             }
