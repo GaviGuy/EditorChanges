@@ -101,13 +101,15 @@ namespace EditorChanges {
             //modify so it swaps vis instead of color (CONFIRMED NOT THE PROBLEM)
             
             CodeInstruction[] changes = {
-                //if invis, set the 2nd bit [SOMETHING IN HERE IS TURNING 0 INTO >1]
+                //if invis, set the 2nd bit [SOMETHING IN HERE IS TURNING 0 INTO 2]
                 //color at top of stack
                 new CodeInstruction(OpCodes.Dup), //dup color
                 new CodeInstruction(OpCodes.Ldc_I4_1), //push 1
-                new CodeInstruction(OpCodes.Clt), //if > 1: 1, else: 0
+                new CodeInstruction(OpCodes.Or), //or
+                new CodeInstruction(OpCodes.Ldc_I4_1), //push 1
+                new CodeInstruction(OpCodes.Clt), //if(1 < c): 1, else: 0
                 new CodeInstruction(OpCodes.Ldc_I4_2), //push 2
-                new CodeInstruction(OpCodes.Mul), //if > 1: 2, else: 0
+                new CodeInstruction(OpCodes.Mul), //if (1 < c): 2, else: 0
                 new CodeInstruction(OpCodes.Or), //or (if invis, always have 2nd bit)
 
                 //remove all but 1 & 2 and invert 2
