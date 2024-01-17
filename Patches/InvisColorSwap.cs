@@ -49,10 +49,8 @@ namespace EditorChanges {
 
             int ind = -1;
             for (int i = 1; i < codes.Count; i++) {
-                if (codes[i].opcode == OpCodes.Ldc_I4_2 
-                        && codes[i - 1].opcode == OpCodes.Add
-                        && codes[i + 1].opcode == OpCodes.Call) {
-                    ind = i;
+                if (codes[i].opcode == OpCodes.Conv_U1) {
+                    ind = i - 4;
                     break;
                 }
             }
@@ -74,25 +72,13 @@ namespace EditorChanges {
             //after add: dup, push2, ceq, push2, mul, sub (ie. if it's 2, subtract 2)
             //           dup, push3, cgt, push2, mul, sub (ie. if it's >3, subtract 2)
             
-            codes.RemoveRange(ind, 2);
+            codes.RemoveRange(ind, 4);
 
             CodeInstruction[] adds = {
-                // color+1 at top of stack
-                new CodeInstruction(OpCodes.Dup), // dup color
-                new CodeInstruction(OpCodes.Ldc_I4_2), // push 2
-                new CodeInstruction(OpCodes.Ceq), // if color == 2: 1, else: 0
-                new CodeInstruction(OpCodes.Ldc_I4_2), // push 2
-                new CodeInstruction(OpCodes.Mul), // mul (if color == 2: 2, else: 0)
-                new CodeInstruction(OpCodes.Neg), // neg
-                new CodeInstruction(OpCodes.Add), // add -(0/2) to color
-                // color+1 (-2) at top of stack
-                new CodeInstruction(OpCodes.Dup), // dup newColor
-                new CodeInstruction(OpCodes.Ldc_I4_3),  // push 3
-                new CodeInstruction(OpCodes.Clt), // if 3 < newColor 1, else 0
-                new CodeInstruction(OpCodes.Ldc_I4_2),  // push 2
-                new CodeInstruction(OpCodes.Mul), // mul (2 if newColor > 3, else 0)
-                new CodeInstruction(OpCodes.Neg), // neg
-                new CodeInstruction(OpCodes.Add) // add -(0/2) to newColor
+                // it's quite shrimple actually. fuck that old noise, just bitwise XOR with 1 lmao
+                new CodeInstruction(OpCodes.Ldc_I4_1), // push 1
+                new CodeInstruction(OpCodes.Xor) // xor
+
             };
 
             codes.InsertRange(ind, adds);

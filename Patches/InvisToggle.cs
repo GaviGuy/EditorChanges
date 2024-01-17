@@ -99,18 +99,23 @@ namespace EditorChanges {
 
 
             //modify so it swaps vis instead of color (CONFIRMED NOT THE PROBLEM)
-            //  dup push2 cgt push4 mul push2 sub add
-            //  ie. if 2 is greater than color, add 2. Else, subtract 2
             
             CodeInstruction[] changes = {
-                new CodeInstruction(OpCodes.Dup), //color index
+                //if invis, set the 2nd bit [SOMETHING IN HERE IS TURNING 0 INTO >1]
+                //color at top of stack
+                new CodeInstruction(OpCodes.Dup), //dup color
                 new CodeInstruction(OpCodes.Ldc_I4_1), //push 1
-                new CodeInstruction(OpCodes.Clt), //if 1 < color index (ie. if invis) 1, else 0
-                new CodeInstruction(OpCodes.Ldc_I4_4), //push 4
-                new CodeInstruction(OpCodes.Mul), //mul by 4 (0 if vis, 4 if invis)
+                new CodeInstruction(OpCodes.Clt), //if > 1: 1, else: 0
                 new CodeInstruction(OpCodes.Ldc_I4_2), //push 2
-                new CodeInstruction(OpCodes.Sub), // sub 0/4 from 2 (2 if vis, -2 if invis)
-                new CodeInstruction(OpCodes.Add) // add to color
+                new CodeInstruction(OpCodes.Mul), //if > 1: 2, else: 0
+                new CodeInstruction(OpCodes.Or), //or (if invis, always have 2nd bit)
+
+                //remove all but 1 & 2 and invert 2
+                //modified color at top of stack
+                new CodeInstruction(OpCodes.Ldc_I4_3), //push 3
+                new CodeInstruction(OpCodes.And), //and (remove all bits but 1 and 2)
+                new CodeInstruction(OpCodes.Ldc_I4_2), //push 2
+                new CodeInstruction(OpCodes.Xor) //xor (invert 2nd bit)
             };
 
             newCodes.RemoveRange(guhInd - 2, 4); // remove
