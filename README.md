@@ -4,6 +4,7 @@ A plugin that adds extra functionality to the SRXD editor.
 ## Current Features
 * allows placing and moving of notes past the outer lanes
 * allows color-swapping invisible notes
+* allows visibility-swapping notes (via the Cut keybind)
 * fixes a bug that causes time signatures to place at the wrong time
 * allows changing key mapping for the flight path editor
 
@@ -17,7 +18,7 @@ Use it to enable individual features of this plugin and to set new keys to use i
 
 ## Potential Future Features
 * allow mirroring in the flight path editor
-* allow changing notes to their invisible variants
+* putting new editor functions onto their own keys (instead of stealing keys)
 * allow changing shape of sliders with no endpoint
 * allow changing ending of stray beathold ends
 * place error flags on stray hold ends, matches ending spins, and scratch snipes
