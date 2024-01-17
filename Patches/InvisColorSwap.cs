@@ -77,18 +77,22 @@ namespace EditorChanges {
             codes.RemoveRange(ind, 2);
 
             CodeInstruction[] adds = {
-                new CodeInstruction(OpCodes.Dup),
-                new CodeInstruction(OpCodes.Ldc_I4_2),
-                new CodeInstruction(OpCodes.Ceq),
-                new CodeInstruction(OpCodes.Ldc_I4_2),
-                new CodeInstruction(OpCodes.Mul),
-                new CodeInstruction(OpCodes.Sub),
-                new CodeInstruction(OpCodes.Dup),
-                new CodeInstruction(OpCodes.Ldc_I4_3),
-                new CodeInstruction(OpCodes.Cgt),
-                new CodeInstruction(OpCodes.Ldc_I4_2),
-                new CodeInstruction(OpCodes.Mul),
-                new CodeInstruction(OpCodes.Sub)
+                // color+1 at top of stack
+                new CodeInstruction(OpCodes.Dup), // dup color
+                new CodeInstruction(OpCodes.Ldc_I4_2), // push 2
+                new CodeInstruction(OpCodes.Ceq), // if color == 2: 1, else: 0
+                new CodeInstruction(OpCodes.Ldc_I4_2), // push 2
+                new CodeInstruction(OpCodes.Mul), // mul (if color == 2: 2, else: 0)
+                new CodeInstruction(OpCodes.Neg), // neg
+                new CodeInstruction(OpCodes.Add), // add -(0/2) to color
+                // color+1 (-2) at top of stack
+                new CodeInstruction(OpCodes.Dup), // dup newColor
+                new CodeInstruction(OpCodes.Ldc_I4_3),  // push 3
+                new CodeInstruction(OpCodes.Clt), // if 3 < newColor 1, else 0
+                new CodeInstruction(OpCodes.Ldc_I4_2),  // push 2
+                new CodeInstruction(OpCodes.Mul), // mul (2 if newColor > 3, else 0)
+                new CodeInstruction(OpCodes.Neg), // neg
+                new CodeInstruction(OpCodes.Add) // add -(0/2) to newColor
             };
 
             codes.InsertRange(ind, adds);

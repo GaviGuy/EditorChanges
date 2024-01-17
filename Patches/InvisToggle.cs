@@ -39,7 +39,7 @@ namespace EditorChanges {
             //2. steal most of the actual logic from ChangeSelectedNoteColor
 
 
-            //find the start & end of the section for changeSelectedNoteColor
+            //find the start & end of the section for changeSelectedNoteColor (100% CONFIRMED)
             int startInd = -1, endInd = -1;
             for (int i = 0; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4
@@ -56,19 +56,21 @@ namespace EditorChanges {
                 }
             }
             if (startInd < 0 || endInd < 0) {
-                //cry about it (need to fix my logger)
                 Logger.LogInfo("InvisToggle: failed to locate changeSelectedNoteColor block");
                 return instructions;
             }
 
             Logger.LogInfo("InvisToggle: start: " + startInd + ", end: " + endInd);
-            //make a copy of the block for color swapping
+            //for (int i = startInd; i < endInd; i++)
+            //    Logger.LogInfo(codes[i].opcode);
+
+            //make a copy of the block for color swapping (100% CONFIRMED)
             var newCodes = new List<CodeInstruction>();
             for (int i = startInd; i < endInd; i++) {
                 newCodes.Add(new CodeInstruction(codes[i]));
             }
 
-            //find the signature of the part that modifies colorIndex
+            //find the signature of the part that modifies colorIndex (confident)
             int guhInd = -1;
             for (int i = 0; i < newCodes.Count - 1; i++) {
                 if (newCodes[i].opcode == OpCodes.Ldc_I4_2
@@ -80,43 +82,42 @@ namespace EditorChanges {
 
             if (guhInd < 0) {
                 Logger.LogInfo("InvisToggle: failed to locate colorIndex changer (guhInd = " + guhInd + ")");
-                Logger.LogInfo("InvisToggle: (newCodes[" + newCodes.Count + "]");
                 return instructions;
             }
 
-            //kill cut
-            int count = 0;
+            //kill cut (100% CONFIRMED)
+            int enumCount = 0;
             for (int i = 0; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4
                             && (int)codes[i].operand == 1107) {
                     codes[i].operand = 9996;
-                    count++;
+                    enumCount++;
                 }
             }
 
-            Logger.LogInfo("InvisToggle: removed " + count + " instances of cut");
+            Logger.LogInfo("InvisToggle: removed " + enumCount + " instances of editorCut's enum");
 
 
-            //modify so it swaps vis instead of color
+            //modify so it swaps vis instead of color (CONFIRMED NOT THE PROBLEM)
             //  dup push2 cgt push4 mul push2 sub add
             //  ie. if 2 is greater than color, add 2. Else, subtract 2
-            /*
+            
             CodeInstruction[] changes = {
-                new CodeInstruction(OpCodes.Dup),
-                new CodeInstruction(OpCodes.Ldc_I4_2),
-                new CodeInstruction(OpCodes.Cgt),
-                new CodeInstruction(OpCodes.Ldc_I4_4),
-                new CodeInstruction(OpCodes.Mul),
-                new CodeInstruction(OpCodes.Ldc_I4_2),
-                new CodeInstruction(OpCodes.Sub),
-                new CodeInstruction(OpCodes.Add)
+                new CodeInstruction(OpCodes.Dup), //color index
+                new CodeInstruction(OpCodes.Ldc_I4_1), //push 1
+                new CodeInstruction(OpCodes.Clt), //if 1 < color index (ie. if invis) 1, else 0
+                new CodeInstruction(OpCodes.Ldc_I4_4), //push 4
+                new CodeInstruction(OpCodes.Mul), //mul by 4 (0 if vis, 4 if invis)
+                new CodeInstruction(OpCodes.Ldc_I4_2), //push 2
+                new CodeInstruction(OpCodes.Sub), // sub 0/4 from 2 (2 if vis, -2 if invis)
+                new CodeInstruction(OpCodes.Add) // add to color
             };
 
-            newCodes.RemoveRange(guhInd - 2, 4);
+            newCodes.RemoveRange(guhInd - 2, 4); // remove
             newCodes.InsertRange(guhInd - 2, changes);
-            */
+            
 
-            //modify the call to look for editorCut's enum instead of changeSelectedNoteColor's enum
+            //modify the call to look for editorCut's enum instead of changeSelectedNoteColor's enum (confident)
             for (int i = 0; i < newCodes.Count; i++) {
                 if (newCodes[i].opcode == OpCodes.Ldc_I4
                             && (int)newCodes[i].operand > 1000) {
@@ -126,7 +127,7 @@ namespace EditorChanges {
                 }
             }
 
-            //modify labels and branches
+            //modify labels and branch operands
 
             //fuck it. let's do this the old way.
             //1. remove all labels
@@ -136,7 +137,6 @@ namespace EditorChanges {
                 newCodes[i].labels.Clear();
             }
 
-            Label newLabel = iL.DefineLabel();
             Label[] newLabels = {
                 iL.DefineLabel(),
                 iL.DefineLabel(),
@@ -162,14 +162,16 @@ namespace EditorChanges {
 
             //set labels
             //this is disgusting, I know, but I'm out of ideas
-            CodeInstruction append = new CodeInstruction(OpCodes.Nop);
 
-            append.labels.Add(newLabels[0]);
-            newCodes.Add(append);
-            Logger.LogInfo("InvisToggle: label 0");
-
+            //out of bounds lmao
+            {
+                CodeInstruction append = new CodeInstruction(OpCodes.Nop);
+                append.labels.Add(newLabels[0]);
+                newCodes.Add(append);
+                Logger.LogInfo("InvisToggle: label 0");
+            }
             //IL_0703
-            for (int i = 1; ; i++) {
+            for (int i = 1; i < newCodes.Count - 1; i++) {
                 if (newCodes[i + 1].opcode == OpCodes.Call
                         && newCodes[i + 1].Calls(typeof(SelectionRanges.SelectionEnumerator).GetMethod("MoveNext"))) {
                     newCodes[i].labels.Add(newLabels[1]);
@@ -178,7 +180,7 @@ namespace EditorChanges {
                 }
             }
             //IL_06B7
-            for (int i = 1; ; i++) {
+            for (int i = 1; i < newCodes.Count - 2; i++) {
                 if (newCodes[i - 1].Branches(out _)
                         && newCodes[i].opcode == OpCodes.Ldsfld
                         && newCodes[i + 1].IsLdloc()
@@ -189,7 +191,7 @@ namespace EditorChanges {
                 }
             }
             //IL_06C6
-            for (int i = 1; ; i++) {
+            for (int i = 1; i < newCodes.Count - 1; i++) {
                 if (newCodes[i + 1].opcode == OpCodes.Call
                         && newCodes[i + 1].Calls(typeof(Note).GetMethod("get_IsSectionContinuation")))  {
                     newCodes[i].labels.Add(newLabels[3]);
@@ -198,7 +200,7 @@ namespace EditorChanges {
                 }
             }
             //IL_0691
-            for (int i = 1; ; i++) {
+            for (int i = 1; i < newCodes.Count - 1; i++) {
                 if (newCodes[i + 1].opcode == OpCodes.Call
                         && newCodes[i + 1].Calls(typeof(SelectionRanges.SelectionEnumerator).GetMethod("get_Current"))) {
                     newCodes[i].labels.Add(newLabels[4]);
@@ -207,7 +209,7 @@ namespace EditorChanges {
                 }
             }
             //IL_074F
-            for (int i = 1; ; i++) {
+            for (int i = 1; i < newCodes.Count; i++) {
                 if (newCodes[i - 1].opcode == OpCodes.Callvirt
                         && newCodes[i - 1].Calls(typeof(PlayableTrackData).GetMethod("SetNote"))) {
                     newCodes[i].labels.Add(newLabels[5]);
@@ -216,7 +218,7 @@ namespace EditorChanges {
                 }
             }
             //IL_071A
-            for (int i = 1; ; i++) {
+            for (int i = 1; i < newCodes.Count - 5; i++) {
                 if (newCodes[i + 1].opcode == OpCodes.Call
                         && !(newCodes[i + 1].Calls(typeof(SelectionRanges.SelectionEnumerator).GetMethod("get_Current")))
                         && newCodes[i + 5].opcode == OpCodes.Callvirt
@@ -227,7 +229,7 @@ namespace EditorChanges {
                 }
             }
             //IL_0768
-            for (int i = 1; ; i++) {
+            for (int i = 1; i < newCodes.Count; i++) {
                 if (newCodes[i - 1].opcode == OpCodes.Endfinally) {
                     newCodes[i].labels.Add(newLabels[7]);
                     Logger.LogInfo("InvisToggle: label 7");
@@ -240,11 +242,23 @@ namespace EditorChanges {
             for (int i = 0; i < codes.Count; i++) {
                 if (codes[i].opcode == OpCodes.Ldc_I4
                         && (int)codes[i].operand == 1084) {
-                    endInd = i - 1;
+                    endInd = i;
                     break;
                 }
             }
-            codes.InsertRange(endInd, newCodes);
+
+            //THE  ISSUE
+            //  the previous block (the one that color swaps) will jump to the next block if it fails to enter (ie. I didn't hit the color swap key)
+            //  in this way, my block gets skipped entirely
+            //  I need to move the label at the end of changeSelectedNoteColor to the start of my block, or to a nop before my block
+
+            //move the labels from endInd (ldc.4) and transfer them to a nop. Insert the nop at endInd. Insert new code after the nop
+            CodeInstruction navi = new CodeInstruction(OpCodes.Nop);
+            navi.labels = codes[endInd].ExtractLabels();
+            codes[endInd].labels.Clear();
+            codes.Insert(endInd, navi);
+
+            codes.InsertRange(endInd + 1, newCodes);
 
             //let's cheat and hardcode an enum for SpinCommands. something in the 1000s
             //1704
