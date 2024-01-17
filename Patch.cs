@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace EditorChanges {
-    [BepInPlugin("srxd.editorchanges", "EditorChanges", "1.1.0")]
+    [BepInPlugin("srxd.editorchanges", "EditorChanges", "1.2.1")]
     public class Patch : BaseUnityPlugin {
 
         public static ManualLogSource logger;
@@ -33,7 +33,7 @@ namespace EditorChanges {
 
         public static ConfigEntry<int[]> subdivisionList;
 
-        private static int[] defaultSubdivisions = {2, 4, 5, 6, 8, 10, 12, 16, 24, 60}; // it won't let me config with arrays :c
+        //private static int[] defaultSubdivisions = {2, 4, 5, 6, 8, 10, 12, 16, 24, 60}; // it won't let me config with arrays :c
 
         private void Awake() {
             logger = Logger;
@@ -89,6 +89,7 @@ namespace EditorChanges {
  //           }
 
             if(enableInvisibility.Value) {
+                Harmony.CreateAndPatchAll(typeof(InvisToggle));
                 Harmony.CreateAndPatchAll(typeof(InvisColorSwap));
                 Logger.LogInfo("Enabled Invisibility");
             }

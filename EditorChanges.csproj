@@ -76,6 +76,7 @@
 	<Compile Include="Patches\ChangeKeybindsDisplay.cs" />
 	<Compile Include="Patches\CustomSubdivisions.cs" />
 	<Compile Include="Patches\InvisColorSwap.cs" />
+	<Compile Include="Patches\InvisToggle.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
