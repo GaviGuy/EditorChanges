@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace EditorChanges {
-    [BepInPlugin("srxd.editorchanges", "EditorChanges", "1.2.1")]
+    [BepInPlugin("srxd.editorchanges", "EditorChanges", "1.3.0")]
     public class Patch : BaseUnityPlugin {
 
         public static ManualLogSource logger;
