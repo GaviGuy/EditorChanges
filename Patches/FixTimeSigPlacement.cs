@@ -12,12 +12,14 @@ namespace EditorChanges {
         static int Postfix(int __result, ClipInfo __instance, out int outputTick, int __1) {
             outputTick = __1;
             if (__result >= 0) {
-                //Logger.LogInfo("Original outputTick: " + __1);
-                var firstMarker = __instance.timeSignatureMarkers[0];
-                outputTick += firstMarker.startingTick;
-                //Logger.LogInfo("New outoutTick: " + outputTick);
+                var markers = __instance.timeSignatureMarkers;
+                for(int i = markers.Length - 1; i >= 0; i--) {
+                    if (outputTick > markers[i].startingTick) {
+                        outputTick += (int) (Math.Round((double) markers[0].startingTick / markers[i].BeatsPerBar) * markers[i].BeatsPerBar);
+                        break;
+                    }
+                }
             }
-            //else Logger.LogInfo("No new timeSigMarker added.");
             return __result;
         }
     }

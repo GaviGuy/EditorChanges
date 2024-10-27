@@ -268,7 +268,7 @@ namespace EditorChanges {
 
             codes.InsertRange(endInd + 1, newCodes);
 
-            Logger.LogInfo("InvisToggle: Transpilation successful!");
+            //Logger.LogInfo("InvisToggle: Transpilation successful!");
 
             return codes.AsEnumerable();
         }

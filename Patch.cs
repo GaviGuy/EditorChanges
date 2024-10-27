@@ -13,7 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace EditorChanges {
-    [BepInPlugin("srxd.editorchanges", "EditorChanges", "1.3.0")]
+    [BepInPlugin("srxd.editorchanges", "EditorChanges", "1.4.0")]
     public class Patch : BaseUnityPlugin {
 
         public static ManualLogSource logger;
@@ -22,7 +22,8 @@ namespace EditorChanges {
             enableFixTimeSigPlacement,
             enableChangeKeybinds,
             enableCustomSubdivisions,
-            enableInvisibility;
+            enableInvisibility,
+            enablePreciseTime;
 
         public static ConfigEntry<int> pitchUpKey,
             pitchDownKey,
@@ -31,26 +32,15 @@ namespace EditorChanges {
             turnRightKey,
             turnLeftKey;
 
-        public static ConfigEntry<int[]> subdivisionList;
-
-        //private static int[] defaultSubdivisions = {2, 4, 5, 6, 8, 10, 12, 16, 24, 60}; // it won't let me config with arrays :c
-
         private void Awake() {
             logger = Logger;
-            
-            /* 
-             * change how this works. disable modules if they're not configed instead of having a setting to disable each one
-             * Lane limit: -1 to disable, 96 default
-             * time sig: seperate module? on/off?
-             * changeKeybinds: default to disable
-             * customSubdivisions: default to disable
-             */
 
             enableRemoveLaneLimit = Config.Bind("Toggles", "enableRemoveLaneLimit", true, "Whether to enable this module");
             enableFixTimeSigPlacement = Config.Bind("Toggles", "enableFixTimeSigPlacement", true, "Whether to enable this module");
             enableChangeKeybinds = Config.Bind("Toggles", "enableChangePathKeybind", true, "Whether to enable this module");
             enableCustomSubdivisions = Config.Bind("Toggles", "enableCustomSubdivisions", true, "Whether to enable this module");
             enableInvisibility = Config.Bind("Toggles", "enableInvisibility", true, "Whether to enable this module");
+            enablePreciseTime = Config.Bind("Toggles", "enablePreciseTime", true, "Whether to enable this module");
 
             pitchDownKey    = Config.Bind("Keybinds", "PitchDownKey",   (int) 'w', "Unicode value of the key for DOWN");
             pitchUpKey      = Config.Bind("Keybinds", "PitchUpKey",     (int) 's', "Unicode value of the key for UP");
@@ -58,17 +48,19 @@ namespace EditorChanges {
             twistRightKey   = Config.Bind("Keybinds", "twistRightKey",  (int) 'd', "Unicode value of the key for COUNTER-CLOCKWISE");
             turnLeftKey     = Config.Bind("Keybinds", "turnLeftKey",    (int) 'e', "Unicode value of the key for LEFT");
             turnRightKey    = Config.Bind("Keybinds", "turnRightKey",   (int) 'q', "Unicode value of the key for RIGHT");
-
-            //subdivisionList = Config.Bind("Misc", "subdivisionList", defaultSubdivisions, "Possible values for editor subdivisions");
             
+            int enabledCount = 0;
+
             if(enableFixTimeSigPlacement.Value) {
                 Harmony.CreateAndPatchAll(typeof(FixTimeSigPlacement));
-                Logger.LogInfo("Enabled FixTimeSigPlacement");
+//                Logger.LogInfo("Enabled FixTimeSigPlacement");
+                enabledCount++;
             }
 
             if(enableRemoveLaneLimit.Value) {
                 Harmony.CreateAndPatchAll(typeof(RemoveLaneLimit));
-                Logger.LogInfo("Enabled RemoveLaneLimit");
+//                Logger.LogInfo("Enabled RemoveLaneLimit");
+                enabledCount++;
             }
 
             if(enableChangeKeybinds.Value
@@ -80,54 +72,29 @@ namespace EditorChanges {
                     || turnRightKey.Value != (int) 'q') {
                 Harmony.CreateAndPatchAll(typeof(ChangeKeybinds));
                 Harmony.CreateAndPatchAll(typeof(ChangeKeybindsDisplay));
-                Logger.LogInfo("Enabled ChangeKeybinds");
+//                Logger.LogInfo("Enabled ChangeKeybinds");
+                enabledCount++;
             }
 
- //           if(enableCustomSubdivisions.Value) {
- //               Harmony.CreateAndPatchAll(typeof(CustomSubdivisions));
- //               Logger.LogInfo("Enabled CustomSubdivisions");
- //           }
+//            if(enableCustomSubdivisions.Value) {
+//                Harmony.CreateAndPatchAll(typeof(CustomSubdivisions));
+//                Logger.LogInfo("Enabled CustomSubdivisions");
+//            }
 
             if(enableInvisibility.Value) {
                 Harmony.CreateAndPatchAll(typeof(InvisToggle));
                 Harmony.CreateAndPatchAll(typeof(InvisColorSwap));
-                Logger.LogInfo("Enabled Invisibility");
+//               Logger.LogInfo("Enabled Invisibility");
+                enabledCount++;
             }
 
-            Harmony.CreateAndPatchAll(typeof(DisplayPreciseTime));
-
+            if(enablePreciseTime.Value) {
+                Harmony.CreateAndPatchAll(typeof(DisplayPreciseTime));
+//               Logger.LogInfo("Enabled PreciseTime");
+                enabledCount++;
+            }
+            
+            Logger.LogInfo("Enabled " + enabledCount + " modules");
         }
-
-        /*
-
-        [HarmonyPatch(typeof(TrackEditorGUI), "HandleTrackTurnEditorInput")]
-        public class mirrorTrackTurn {
-            //TODO: allow action via a key
-
-        }
-
-        [HarmonyPatch(typeof(), "")]
-        public class removeAutoDeletion {
-            //TODO: passive
-        }
-
-        [HarmonyPatch(typeof(), "")]
-        public class keepPlaceInClipInfoEditor {
-            //TODO: passive
-            //OnEditClipInfoPressed()
-            //CycleEditorMode
-        }
-
-        public class allowBugSliderShapeChange { }
-        public class allowStrayBeatholdChange { }
-
-        [HarmonyPatch(typeof(TrackEditorGUI), "HandleNoteEditorInput()"]
-        public class toggleInvisibile {
-            //make a new repeated section
-            //will also need to patch InputMapping.SpinCommands
-            //will also need to explore input keys
-        }
-
-        */
     }
 }

@@ -22,7 +22,7 @@ namespace EditorChanges
                 }
             }
             
-            Patch.logger.LogInfo("Transpiled time!");
+            //Patch.logger.LogInfo("Transpiled time!");
 
             return code;
         }
