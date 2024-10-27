@@ -94,6 +94,8 @@ namespace EditorChanges {
                 Logger.LogInfo("Enabled Invisibility");
             }
 
+            Harmony.CreateAndPatchAll(typeof(DisplayPreciseTime));
+
         }
 
         /*
