@@ -10,29 +10,88 @@ using System.Linq;
 
 namespace EditorChanges {
 
-    [HarmonyPriority(Priority.High)]
-    [HarmonyPatch(typeof(TrackEditorGUI), "HandleNoteEditorInput")]
+    [HarmonyPriority(Priority.VeryHigh)]
+    [HarmonyPatch(typeof(TrackEditorFunctions_Notes), "Cut")]
     public class InvisToggle {
         static ManualLogSource Logger = Patch.logger;
 
+
+
+        /*
+        static List<CodeInstruction> rippedCodes;
+
+        //2 options:
+        //  1. locate the color change logic and duplicate it into the cut function, changing the color iteration number slightly
+        //  2. prefix patch and just make the function in a high level language lmao
+        
+        [HarmonyTranspiler]
+        static IEnumerable<CodeInstruction> GetColorSwapCode(IEnumerable<CodeInstruction> instructions) {
+            rippedCodes = new List<CodeInstruction>(instructions);
+            return rippedCodes.AsEnumerable();
+        }
+
+        [HarmonyTranspiler]
+        static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator iL) {
+            
+            //Logger.LogInfo("InvisColorSwap: entered transpiler");
+
+            int ind = -1;
+            for (int i = 1; i < rippedCodes.Count; i++) {
+                if (rippedCodes[i].opcode == OpCodes.Conv_U1) {
+                    ind = i - 4;
+                    break;
+                }
+            }
+            if (ind < 0) {
+                Logger.LogError("InvisToggle: failed to locate signature");
+                return instructions;
+            }
+
+            rippedCodes.RemoveRange(ind, 4);
+
+            CodeInstruction[] adds = {
+                // 1. AND with 3
+                // 2. XOR with 2
+                new CodeInstruction(OpCodes.Ldc_I4_3), // push 3
+                new CodeInstruction(OpCodes.And), // and
+                new CodeInstruction(OpCodes.Ldc_I4_1), // push 2
+                new CodeInstruction(OpCodes.Xor) // xor
+            };
+
+            rippedCodes.InsertRange(ind, adds);
+            
+
+            //Logger.LogInfo("InvisColorSwap: Transpilation successful!");
+
+            return rippedCodes.AsEnumerable();
+        }
+        */
+
+
+
+        // BELOW IS THE OLD TRANSPILATION METHOD
+        // IT SHOULDN'T BE NECESSARY ANYMORE
+        // BUT I'M TOO SCARED TO DELETE IT ENTIRELY
+
+        /*
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator iL) {
             var codes = new List<CodeInstruction>(instructions);
             //Logger.LogInfo("InvisToggle: entered transpiler");
 
             //from mew's speenphone:
             {
-                /*
-                [HarmonyPatch(typeof(Game), nameof(Game.Update)), HarmonyPostfix]
-                private static void Game_Update_Postfix()
-                {
-                    if (Input.GetKeyDown(KeyCode.F12))
-                    {
-                        enableCustomSounds = !enableCustomSounds;
-                        NotificationSystemGUI.AddMessage("Custom sounds are " + (enableCustomSounds ? "ON" : "OFF"));
-                        SetClips();
-                    }
-                }
-                */
+                
+//                [HarmonyPatch(typeof(Game), nameof(Game.Update)), HarmonyPostfix]
+//                private static void Game_Update_Postfix()
+//                {
+//                    if (Input.GetKeyDown(KeyCode.F12))
+//                    {
+//                        enableCustomSounds = !enableCustomSounds;
+//                        //NotificationSystemGUI.AddMessage("Custom sounds are " + (enableCustomSounds ? "ON" : "OFF"));
+//                        SetClips();
+//                    }
+//                }
+                
             }
 
             //1. find a way to add a new InputMapping.SpinCommands for invisToggle
@@ -272,5 +331,6 @@ namespace EditorChanges {
 
             return codes.AsEnumerable();
         }
+            */
     }
 }

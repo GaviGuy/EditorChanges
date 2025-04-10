@@ -10,8 +10,9 @@ using System.Reflection.Emit;
 using System.Linq;
 
 namespace EditorChanges {
-
-    [HarmonyPatch(typeof(TrackEditorGUI), "HandleNoteEditorInput")]
+    
+    [HarmonyPriority(Priority.Normal)]
+    [HarmonyPatch(typeof(TrackEditorFunctions_Notes), "ChangeSelectedNoteColor")]
     public class InvisColorSwap {
         static ManualLogSource Logger = Patch.logger;
         static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions) {

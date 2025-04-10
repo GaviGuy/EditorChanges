@@ -18,14 +18,16 @@ namespace EditorChanges {
 
         public static ManualLogSource logger;
 
-        private static ConfigEntry<bool> enableRemoveLaneLimit,
+        private static ConfigEntry<bool>
+            enableRemoveLaneLimit,
             enableFixTimeSigPlacement,
             enableChangeKeybinds,
-            enableCustomSubdivisions,
+            // enableCustomSubdivisions,
             enableInvisibility,
             enablePreciseTime;
 
-        public static ConfigEntry<int> pitchUpKey,
+        public static ConfigEntry<int>
+            pitchUpKey,
             pitchDownKey,
             twistRightKey,
             twistLeftKey,
@@ -38,7 +40,7 @@ namespace EditorChanges {
             enableRemoveLaneLimit = Config.Bind("Toggles", "enableRemoveLaneLimit", true, "Whether to enable this module");
             enableFixTimeSigPlacement = Config.Bind("Toggles", "enableFixTimeSigPlacement", true, "Whether to enable this module");
             enableChangeKeybinds = Config.Bind("Toggles", "enableChangePathKeybind", true, "Whether to enable this module");
-            enableCustomSubdivisions = Config.Bind("Toggles", "enableCustomSubdivisions", true, "Whether to enable this module");
+            // enableCustomSubdivisions = Config.Bind("Toggles", "enableCustomSubdivisions", true, "Whether to enable this module");
             enableInvisibility = Config.Bind("Toggles", "enableInvisibility", true, "Whether to enable this module");
             enablePreciseTime = Config.Bind("Toggles", "enablePreciseTime", true, "Whether to enable this module");
 
@@ -82,8 +84,8 @@ namespace EditorChanges {
 //            }
 
             if(enableInvisibility.Value) {
-                Harmony.CreateAndPatchAll(typeof(InvisToggle));
-                Harmony.CreateAndPatchAll(typeof(InvisColorSwap));
+//                Harmony.CreateAndPatchAll(typeof(InvisToggle));
+//                Harmony.CreateAndPatchAll(typeof(InvisColorSwap));
 //               Logger.LogInfo("Enabled Invisibility");
                 enabledCount++;
             }

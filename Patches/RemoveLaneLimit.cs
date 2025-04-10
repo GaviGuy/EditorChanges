@@ -9,7 +9,7 @@ using System.Linq;
 
 namespace EditorChanges {
 
-    [HarmonyPatch(typeof(TrackEditorGUI), "MoveNotesInLateralDirection")]
+    [HarmonyPatch(typeof(TrackEditorFunctions_Notes), "MoveNotesInLateralDirection")]
     public class RemoveLaneLimit {
         //passive
         //TODO: allow toggle via a key

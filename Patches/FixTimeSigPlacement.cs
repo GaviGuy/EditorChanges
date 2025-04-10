@@ -9,7 +9,7 @@ namespace EditorChanges {
     [HarmonyPatch(typeof(ClipInfo), "GetTickTimeSignatureMarkerWouldInsert")]
     public class FixTimeSigPlacement {
         //passive
-        static int Postfix(int __result, ClipInfo __instance, out int outputTick, int __1) {
+        /*static int Postfix(int __result, ClipInfo __instance, out int outputTick, int __1) {
             outputTick = __1;
             if (__result >= 0) {
                 var markers = __instance.timeSignatureMarkers;
@@ -21,6 +21,6 @@ namespace EditorChanges {
                 }
             }
             return __result;
-        }
+        }*/
     }
 }
